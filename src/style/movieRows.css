@@ -1,0 +1,20 @@
+.rows {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+}
+
+.rows::-webkit-scrollbar {
+  display: none; /* hide scrollbar */
+}
+
+.movie-card {
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+}
+.movie-card::-webkit-scrollbar {
+  display: none; /* hide scrollbar */
+}
