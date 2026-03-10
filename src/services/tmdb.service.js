@@ -29,7 +29,6 @@ export const getTrendingMovies = async (page = 1) => {
   if (res.status !== 200) {
     throw new Error("TMDB Malayalam movies fetch failed");
   }
-
   const filteredResults = res.data.results.filter(movie => movie.poster_path != null);
 
   return filteredResults;

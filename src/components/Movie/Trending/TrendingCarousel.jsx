@@ -16,8 +16,8 @@ const TrendingMovies = () => {
         const movies = await getTrendingMovies();
         setMovies(movies);
       } catch (err) {
-        console.error(err);
         setError("Failed to load movies");
+        console.error(err);
       } finally {
         setLoading(false);
       }
