@@ -1,35 +1,98 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Search, Bell } from "lucide-react";
+import { useState } from "react";
 import Netflix from "../../assets/icons/netflix.svg";
+import { useWatch } from "../../context/watchContext";
+import { LogoutService } from "../../services/auth.service";
+import WatchlistModal from "../Home/WatchlistModal";
 
 const ProtectedHeader = () => {
+  const { watchingMovieId } = useWatch();
   const navigate = useNavigate();
-  
-  const handleLogout = () => {
-    // Add logout logic here
-    navigate("/");
+  const [showWatchlist, setShowWatchlist] = useState(false);
+
+  if (watchingMovieId) return null;
+
+  const handleClick = async () => {
+    try {
+      await LogoutService();
+      navigate("/auth/login");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  return (
-    <header className="absolute top-0 left-0 w-full z-50">
-      <div className="mx-auto flex max-w-350 items-center justify-between px-6 py-5">
-        <img src={Netflix} alt="Netflix" className="h-10 w-auto" />
+  const navItems = [
+    "Home",
+    "TV Shows",
+    "Movies",
+    "Games",
+    "New & Popular",
+    "Browse by Languages",
+  ];
 
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <select className="appearance-none rounded border border-zinc-500 bg-black/60 px-4 py-1.5 text-sm text-white focus:outline-none">
-              <option value="en">English</option>
-              <option value="ml">Malayalam</option>
-            </select>
+  return (
+    <header className="fixed top-0 left-0 z-50 w-full bg-gradient-to-b from-black/90 to-transparent">
+      <div className="mx-auto flex h-16 items-center justify-between px-10">
+
+        {/* Left */}
+        <div className="flex items-center gap-10">
+          <img
+            onClick={() => navigate("/")}
+            src={Netflix}
+            alt="Netflix"
+            className="h-7 w-auto cursor-pointer"
+          />
+
+          <nav className="flex items-center gap-5 text-sm text-zinc-300">
+            {navItems.map((item) => (
+              <NavLink
+                key={item}
+                to="#"
+                className="hover:text-white transition"
+              >
+                {item}
+              </NavLink>
+            ))}
+
+            <button
+              onClick={() => setShowWatchlist(true)}
+              className="hover:text-white transition"
+            >
+              My List
+            </button>
+          </nav>
+        </div>
+
+        {/* Right */}
+        <div className="flex items-center gap-5 text-zinc-300">
+          <button className="hover:text-white transition">
+            <Search size={20} />
+          </button>
+
+          <span className="text-sm">Children</span>
+
+          <button className="hover:text-white transition">
+            <Bell size={20} />
+          </button>
+
+          <div className="h-8 w-8 rounded bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
+            R
           </div>
 
           <button
-            onClick={handleLogout}
-            className="rounded bg-red-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-red-700"
+            onClick={handleClick}
+            className="px-2 py-1 rounded bg-red-500"
           >
-            Sign Out
+            Logout
           </button>
         </div>
+
       </div>
+
+      {showWatchlist && (
+        <WatchlistModal onClose={() => setShowWatchlist(false)} />
+      )}
     </header>
   );
 };

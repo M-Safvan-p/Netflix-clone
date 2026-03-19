@@ -13,8 +13,9 @@ const TrendingMovies = () => {
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const movies = await getTrendingMovies();
-        setMovies(movies);
+        const data = await getTrendingMovies();
+        const movieList = Array.isArray(data) ? data : (data?.results || []);
+        setMovies(movieList);
       } catch (err) {
         setError("Failed to load movies");
         console.error(err);

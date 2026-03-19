@@ -13,6 +13,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
   const [formError, setFormError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,13 +43,30 @@ const Login = () => {
 
     if (hasError) return;
 
+    setIsLoading(true);
+    setFormError(null);
+
     try {
       await login(email.trim(), password);
       navigate("/home");
-    } catch {
-      setFormError(
-        "Sorry, we can't find an account with this email address. Please try again or create a new account.",
-      );
+    } catch (error) {
+      console.error("Login error:", error);
+
+      const errorCode = error?.code;
+
+      if (errorCode === "auth/invalid-credential") {
+        setFormError(
+          "Sorry, we can't find an account with this email. Please sign up.",
+        );
+      } else if (errorCode === "auth/wrong-password") {
+        setFormError("Incorrect password. Please try again.");
+      } else if (errorCode === "auth/too-many-requests") {
+        setFormError("Too many attempts. Try again later.");
+      } else {
+        setFormError("Login failed. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,9 +98,10 @@ const Login = () => {
 
         <button
           type="submit"
-          className="mt-4 w-full rounded bg-red-600 py-3 font-semibold hover:bg-red-700"
+          disabled={isLoading}
+          className="mt-4 w-full rounded bg-red-600 py-3 font-semibold hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 transition"
         >
-          Sign In
+          {isLoading ? "Signing In..." : "Sign In"}
         </button>
       </form>
 

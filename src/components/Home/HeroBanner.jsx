@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { getRandomMovie } from "../../services/tmdb.service";
 import ProtectedHeader from "../../components/layout/ProtectedHeader";
+import MovieDetailModal from "./MovieDetailModal"
 import HeroContent from "./HeroContent";
-import MovieDetailsModal from "../MovieDetails/MovieDetailsModal";
-import Watch from "../../../pages/watch/Watch";
-import Loader from "../../common/Loader";
-import { useWatch } from "../../../context/watchContext";
+import WatchModal from "../../pages/watch/Watch";
+import Loader from "../Common/Loader";
+import { useWatch } from "../../context/watchContext";
 
 const HeroBanner = () => {
-  const [movie, setMovie] = useState<MovieDetails | null>(null);
-  const [selectedMovie, setSelectedMovie] = useState<MovieDetails | null>(null);
-  const [watchMovieId, setWatchMovieId] = useState<number | null>(null);
+  const [movie, setMovie] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [watchMovieId, setWatchMovieId] = useState(null);
   const [isLoading, setLoading] = useState(true);
+
   const { setWatchingMovieId } = useWatch();
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const HeroBanner = () => {
       setMovie(m);
       setLoading(false);
     };
+
     fetchMovie();
   }, []);
 
@@ -43,35 +45,37 @@ const HeroBanner = () => {
       />
 
       <ProtectedHeader />
+
       <HeroContent
         movie={movie}
         onClick={() => setSelectedMovie(movie)}
-        onPlay={() => setWatchMovieId(movie!.id)}
+        onPlay={() => setWatchMovieId(movie.id)}
       />
 
       <div
         className="
-      pointer-events-none
-      absolute bottom-0 left-0 right-0
-      h-48
-      bg-linear-to-b
-      from-transparent
-      via-[#050505]/30
-      to-[#161616]
-    "
+        pointer-events-none
+        absolute bottom-0 left-0 right-0
+        h-48
+        bg-linear-to-b
+        from-transparent
+        via-[#050505]/30
+        to-[#161616]
+      "
       />
 
       {/* Blur layer */}
       <div
         className="
-      pointer-events-none
-      absolute bottom-0 left-0 right-0
-      backdrop-blur-xs
-      bg-[#000000]/10
-    "
+        pointer-events-none
+        absolute bottom-0 left-0 right-0
+        backdrop-blur-xs
+        bg-[#000000]/10
+      "
       />
+
       {selectedMovie && (
-        <MovieDetailsModal
+        <MovieDetailModal
           movie={selectedMovie}
           onClose={() => setSelectedMovie(null)}
           onPlay={() => {
@@ -80,8 +84,9 @@ const HeroBanner = () => {
           }}
         />
       )}
+
       {watchMovieId && (
-        <Watch
+        <WatchModal
           onClose={() => {
             setWatchMovieId(null);
             setWatchingMovieId(null);

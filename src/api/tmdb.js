@@ -8,4 +8,4 @@ const tmdb = axios.create({
   },
 });
 
-export default tmdb;
+export default tmdb; 

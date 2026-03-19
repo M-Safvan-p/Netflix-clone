@@ -50,7 +50,7 @@ const Signup = () => {
 
     try {
       await signup(email.trim(), password.trim());
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       let message = "An unexpected error occurred.";
 
